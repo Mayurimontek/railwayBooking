@@ -3,9 +3,11 @@ const MyContext = createContext();
 
 const MyContextProvider = ({children}) => {
     const [travelDetails, setTravelDetails] = useState({
-        fromStation: '',
-        toStation: '',
-        travelDate: '',
+        fromStation: "",
+        fromStationName: "",
+        toStation: "",
+        toStationName: "",
+        travelDate: "",
     });
     const [loggedUserData, setLoggedUser] = useState({});
     const updateLoggedUserData = (user) => {

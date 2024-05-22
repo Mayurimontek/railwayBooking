@@ -11,7 +11,9 @@ const Navbar = () => {
   const [stationList, setstationList] = useState([]);
   const [stationObj, setStationObj] = useState({
     fromStation: "",
+    fromStationName: "",
     toStation: "",
+    toStationName: "",
     travelDate: "",
   });
   const navigateTo = () => {
@@ -32,8 +34,9 @@ const Navbar = () => {
     setHideImageDiv(false);
     navigate("/login");
   }
-  const handleChange = (field,value) => {
-    const updatedStationObj ={...stationObj,[field]:value};
+  const handleChange = (field,value,name) => {
+    debugger
+    const updatedStationObj ={...stationObj,[field]:value,[`${field}Name`]:name};
     setStationObj(updatedStationObj);
     updateTravelDetails(updatedStationObj);
   };
@@ -108,7 +111,10 @@ const Navbar = () => {
                               name=""
                               id="fromStation"
                               className="form-select"
-                              onChange={(e) => handleChange('fromStation',e.target.value)}
+                              onChange={(e) => {
+                                const selectedOption = e.target.options[e.target.selectedIndex];
+                                handleChange('fromStation', selectedOption.value, selectedOption.text);
+                              }}
                             >
                               <option>Select City</option>
                               {stationList.map((station, index) => {
@@ -128,7 +134,10 @@ const Navbar = () => {
                               name=""
                               id="toStation"
                               className="form-select"
-                              onChange={(e) => handleChange('toStation',e.target.value)}
+                              onChange={(e) => {
+                                const selectedOption = e.target.options[e.target.selectedIndex];
+                                handleChange('toStation', selectedOption.value, selectedOption.text);
+                              }}
                             >
                               <option>Select City</option>
                               {stationList.map((station, index) => {

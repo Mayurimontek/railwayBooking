@@ -5,6 +5,7 @@ import { Modal, Button, Table, Form, Row, Col } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 const Search = () => {
+    debugger
     const { travelDetails, loggedUserData, updateLoggedUserData } = useContext(MyContext);
     const departureStationId = travelDetails.fromStation;
     const arrivalStationId = travelDetails.toStation;
@@ -14,13 +15,10 @@ const Search = () => {
     const [show, setShow] = useState(false);
     const [selectedTrain, setSelectedTrain] = useState(null);
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
     const [passengers, setPassengers] = useState([]);
     const navigate = useNavigate();
     const[trainId,settrainId]=useState();
-    const[passengerId,setpassengerId]=useState();
-    const[travelDate,settravelDate]=useState();
-    const[totalSeats,settotalSeats]=useState();
+    
     const [bookTicketObj, setbookTicketObj] = useState({
         "bookingId": 0,
         "trainId": 0,
@@ -60,7 +58,7 @@ const Search = () => {
         getAllStation();
     }, []);
     const bookTicket = (trainData) => {
-        debugger
+        
         if (loggedUserData.phone == undefined) {
             toast.error('You have to Login first');
             navigate("/login");
@@ -74,27 +72,35 @@ const Search = () => {
     }
     const handleAddPassenger = () => {
         if (passengerObj.passengerName && passengerObj.age && passengerObj.seatNo) {
-            const newPassengers = [...passengers, { ...passengerObj }];
-            setPassengers(newPassengers);
-            setbookTicketObj(prevObj => ({
-                ...prevObj,
-                totalSeats: newPassengers.length,
-                TrainAppBookingPassengers: newPassengers
-            }));
-            setpassengerId({ bookingId: 0, passengerName: '', age: 0, seatNo: 0 });
-        } else {
-            toast.error("Please fill all passenger details.");
+            setPassengers([...passengers, { ...passengerObj }]);
+            
         }
+        
+        else{
+            toast.error('Please fill pessengers details');
+        }
+        setpassengerObj({ passengerName: '', age: '' ,seatNo:''});
     };
-
     const bookTrainTicket =()=>{
-        debugger
+        
+        const bookticketData ={
+            ...bookTicketObj,
+            trainId:trainId,
+            passengerId:loggedUserData.passengerID,
+            travelDate :departureDate,
+            bookingDate:new Date(),
+            totalSeats:passengers.length,
+            TrainAppBookingPassengers:passengers
+
+        }
+        setbookTicketObj(bookticketData);
         try {
-            postData('BookTrain',bookTicketObj).then(result=>{
-                if(result !=undefined){
-                    debugger
+            postData('BookTrain',bookticketData).then(result=>{
+                if(result ==null){
+                    
                     toast.success('Ticket Booked...!');
                     setShow(false);
+                    setPassengers([]);
                 }
                 else{
                     toast.error('Error in booking Ticket');
@@ -110,6 +116,7 @@ const Search = () => {
                 <div className="row">
                     <div className="col-4 px-4">
                         <select className="form-select">
+                            <option>{travelDetails.fromStationName}</option>
                             {stationList.map((station, index) => {
                                 return (
                                     <option key={station.stationID} value={station.stationID}>
@@ -121,6 +128,7 @@ const Search = () => {
                     </div>
                     <div className="col-4 px-4">
                         <select className="form-select">
+                        <option>{travelDetails.toStationName}</option>
                             {stationList.map((station, index) => {
                                 return (
                                     <option key={station.stationID} value={station.stationID}>
@@ -140,7 +148,7 @@ const Search = () => {
             </div>
             <div className="container-fluid pt-2">
                 <p style={{ border: '1px solid', padding: '5px', marginTop: '5px' }}>
-                    <strong>{trainsList.length}</strong> Result Found For <strong>Pune</strong> to <strong>Nagpur</strong> on {departureDate}
+                    <strong>{trainsList.length}</strong> Result Found For <strong>{travelDetails.fromStationName}</strong> to <strong>{travelDetails.toStationName}</strong> on {departureDate}
                 </p>
                 <div className="row">
                     {trainsList.map((trainData, index) => (

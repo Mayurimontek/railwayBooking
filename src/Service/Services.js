@@ -8,7 +8,7 @@ const getData =async(endpoint)=>{
     const result =await axios.get(`${URL}${endpoint}`);
     return result.data.data;
     } catch (error) {
-        toast.alert(error);
+        toast.error(error);
     }
 }
 const postData =async(endpoint,obj)=>{

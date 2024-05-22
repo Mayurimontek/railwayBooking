@@ -22,7 +22,11 @@ function App() {
         <Route path="/login" element={<Login/>}></Route>
       </Routes>
       </BrowserRouter>
-      <ToastContainer />
+      <ToastContainer
+          position="top-center"
+          autoClose={1000}
+          style={{ marginTop: "auto", marginBottom: "auto" }}
+        />
       </MyContextProvider>
       
     </div>
